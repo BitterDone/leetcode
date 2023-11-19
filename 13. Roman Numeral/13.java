@@ -20,10 +20,10 @@ class Solution {
 
             int mult = 1;
             if (u+1 < s.length() && (map.get(s.charAt(u)) < map.get(s.charAt(u+1)))) {
-                mult = -1;
-            } 
-
-            sum += (mult * map.get(s.charAt(u)));
+                sum -= map.get(s.charAt(u));
+            } else {
+                sum += map.get(s.charAt(u));
+            }
             
             // ------------------------------
             
