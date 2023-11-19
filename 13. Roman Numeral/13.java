@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.HashSet;
 class Solution {
     public int romanToInt(String s) {
         HashMap<Character, Integer> map = new HashMap<>();        
@@ -10,26 +11,41 @@ class Solution {
         map.put('D', 500);
         map.put('M', 1000);
 
-        // Same time/memory
+        // // Set vs HashSet, same time/memory as test.equals
+        // Set<String> testCases = Set.of("IV", "IX", "XL", "XC", "CD", "CM",);
         // HashSet<String> testCases = new HashSet<String>(Arrays.asList("IV", "IX", "XL", "XC", "CD", "CM"));
         int sum = 0;
         for (int u=0;u<s.length();u++) {
-            char curr = s.charAt(u);
-            sum += map.get(curr);
+            int curr = map.get(s.charAt(u));
 
-            if (u-1 < 0) { continue; }
+            int mult = 1;
+            if (u+1 < s.length()) {
+                int next = map.get(s.charAt(u+1));
+                if (curr < next) {
+                    mult = -1;
+                }
+            } 
 
-            String test = s.substring(u-1, u+1);
-            int val = map.get(s.charAt(u-1));
+            sum += (mult * curr);
+            
+            // ------------------------------
+            
+            // if (u-1 < 0) { continue; }
 
-            // Same time/memory
+            // String test = s.substring(u-1, u+1);
+            // int val = map.get(s.charAt(u-1));
+
+            // // Same time/memory
             // if (testCases.contains(test)) { sum -= 2*val; }
-            if (test.equals("IV")) { sum -= 2*val; }
-            if (test.equals("IX")) { sum -= 2*val; }
-            if (test.equals("XL")) { sum -= 2*val; }
-            if (test.equals("XC")) { sum -= 2*val; }
-            if (test.equals("CD")) { sum -= 2*val; }
-            if (test.equals("CM")) { sum -= 2*val; }
+            
+            // ------------------------------
+
+            // if (test.equals("IV")) { sum -= 2*val; }
+            // if (test.equals("IX")) { sum -= 2*val; }
+            // if (test.equals("XL")) { sum -= 2*val; }
+            // if (test.equals("XC")) { sum -= 2*val; }
+            // if (test.equals("CD")) { sum -= 2*val; }
+            // if (test.equals("CM")) { sum -= 2*val; }
 
             // char next;
             // if (s.charAt(u-1)=='I') {
