@@ -19,11 +19,8 @@ class Solution {
             int curr = map.get(s.charAt(u));
 
             int mult = 1;
-            if (u+1 < s.length()) {
-                int next = map.get(s.charAt(u+1));
-                if (curr < next) {
-                    mult = -1;
-                }
+            if (u+1 < s.length() && curr < map.get(s.charAt(u+1))) {
+                mult = -1;
             } 
 
             sum += (mult * curr);
