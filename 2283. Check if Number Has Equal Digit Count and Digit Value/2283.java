@@ -4,8 +4,8 @@ class Solution {
 
     public boolean digitCount(String numberString) {
         int[] num = new int[numberString.length()];
-        String[] numberStrings = numberString.split("");
-        for (int k=0;k<num.length; k++) { num[k] = Integer.parseInt(numberStrings[k]); }
+        // String[] numberStrings = numberString.split("");
+        for (int k=0;k<num.length; k++) { num[k] = numberString.charAt(k)-'0'; }
         int[] tracker = new int[num.length];
 
         p(numberString.length()+" digits in "+numberString+","+numberString.length()+"="+num.length+"="+tracker.length);
