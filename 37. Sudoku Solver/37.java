@@ -1,63 +1,113 @@
+import java.util.HashSet;
 class Solution {
-    public void solveSudoku(char[][] board) {
-        // for(int _x=0;_x<board.length;_x++) {
+    public void solveSudoku(char[][] b) {
+        _solveSudoku(b);
+    }
+    public boolean _solveSudoku(char[][] b) {
+        // given a board, find the next open space
+        // save its coords
+        int[] currSpace = findNextSpace(b);
+        pArrI(currSpace, "is next space");
+        if (currSpace[0] == 9) {
+            // the board is solved
+            p("The board is solved!");
+            pBoard(b);
+            return true;
+        }
 
-        //     for(int _y=0;_y<board.length;_y++) {
-        //         if (board[x][y])
-        //     }
+        // insert a minimum starting value
+        // 49 50 51 52 53 54 55 56 57
+        // 1  2  3  4  5  6  7  8  9
+        char currVal = 49;
+        // b[currSpace[0]][currSpace[1]] = currVal; // here?
 
-        // }
+        // if duplicate
+        //      go back - by recursion, return false
+        //      go back - by loops, change y/x to last open space
+        //      increment the starting value
+        //      check for duplicates again
+        boolean haveDuplicates = true;
+        while (haveDuplicates && currVal < 58) {
+            b[currSpace[0]][currSpace[1]] = currVal; // or here?
+            p("---" + currSpace[0] + ", " + currSpace[1] + "Attempting " + currVal + " for space " );
+            // check the row, column, sq for duplicates
+            haveDuplicates = duplicatesExist(b, currSpace);
+            currVal++;
 
-        // char[][] b = {
-        //     //0    1    2    3    4    5    6    7    8
-        //     {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'},      // 0
-        //     {'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r'},      // 1
-        //     {'s', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1'},      // 2
-        //     {'2', '3', '4', '5', '6', '7', '8', '9', '10'},     // 3
-        //     {'11','12','13','14','15','16','17','18','19'},     // 4
-        //     {'20','21','22','23','24','25','26','27','28'},     // 5
-        //     {'29','30','31','32','33','34','35','36','37'},     // 6
-        //     {'38','39','40','41','42','43','44','45','46'},     // 7
-        //     {'47','48','49','50','51','52','53','54','55'}      // 8
-        //     };
-        String[][] s = {
-            //0    1    2    3    4    5    6    7    8
-            {"a", "b", "c",    "d", "e", "f",    "g", "h", "i"},      // 0
-            {"j", "k", "l",    "m", "n", "o",    "p", "q", "r"},      // 1
-            {"s", "t", "u",    "v", "w", "x",    "y", "z", "1"},      // 2
+            if (currVal == 58) { // need to back up one level
+                p("ERROR -------------- something went wrong with duplicate detection at space " + currSpace[0] + ", " + currSpace[1]);
+                pBoard(b);
+                b[currSpace[0]][currSpace[1]] = '.';
+                return false;
+            }
+
+            p("Inserted " + (int)(currVal-1) + " at space " + currSpace[0] + ", " + currSpace[1]);
+            // if no duplicate
+            //      find the next open space
+            // repeat until no open spaces remain
             
-            {"2", "3", "4",    "5", "6", "7",    "8", "9", "10"},     // 3
-            {"11","12","13",   "14","15","16",   "17","18","19"},     // 4
-            {"20","21","22",   "23","24","25",   "26","27","28"},     // 5
-            
-            {"29","30","31",   "32","33","34",   "35","36","37"},     // 6
-            {"38","39","40",   "41","42","43",   "44","45","46"},     // 7
-            {"47","48","49",   "50","51","52",   "53","54","55"}      // 8
-            };
-        // pArr(getRowFor(s, 0));
-        // pArr(getColFor(s, 0));
-        pArr(getSqFor(s, 0,0));
-        pArr(getSqFor(s, 2,2));
-        pArr(getSqFor(s, 9,9));
+            return _solveSudoku(b);
+        }
+
+
+
 
     }
 
-    String[] getRowFor(String[][] board, int y) {
-        String[] row = new String[9];
+    char convertInt(int i) { return (char)(i + 48); }
+    int convertChar(char c) { return (int)(c - 48); }
+
+    boolean duplicatesExist(char[][] b, int[] coords) {
+        char[] tRow = getRowFor(b, coords[0]);
+        pArrC(tRow);
+        if (hasDuplicates(tRow)) { return true; }
+        char[] tCol = getColFor(b, coords[1]);
+        pArrC(tCol);
+        if (hasDuplicates(tCol)) { return true; }
+        char[] tSq = getSqFor(b, coords[0], coords[1]);
+        pArrC(tSq);
+        if (hasDuplicates(tSq)) { return true; }
+        return false;
+    }
+
+    boolean hasDuplicates(char[] test) {
+        HashSet<Character> chars = new HashSet<Character>();
+        for(char c: test) {
+            if (c == '.') { continue; }
+            if (!chars.add(c)) { return true; }
+        }
+        return false;
+    }
+
+    int[] findNextSpace(char[][] board) {
+        int[] coords = new int[]{9,9};
+        for(int _y=0;_y<board.length;_y++) {
+            for(int _x=0;_x<board.length;_x++) {
+                if (board[_y][_x] == '.') {
+                    coords[0] = _y;
+                    coords[1] = _x;
+                }
+            }   
+        }
+        return coords;
+    }
+
+    char[] getRowFor(char[][] board, int y) {
+        char[] row = new char[9];
         for (int col=0;col<9;col++) {
             row[col] = board[y][col];
         }
         return row;
     }
-    String[] getColFor(String[][] board, int x) {
-        String[] col = new String[9];
+    char[] getColFor(char[][] board, int x) {
+        char[] col = new char[9];
         for (int row=0;row<9;row++) {
             col[row] = board[row][x];
         }
         return col;
     }
-    String[] getSqFor(String[][]board, int _y, int _x) {
-        String[] sq = new String[9];
+    char[] getSqFor(char[][]board, int _y, int _x) {
+        char[] sq = new char[9];
 
         int lowY = (int)_y/3;
         int lowX = (int)_x/3;
@@ -71,12 +121,25 @@ class Solution {
         }
         return sq;
     }
-    void pArr(String[] c) { 
+    void pArrC(char[] c) { 
         String s = "";
         for(int i=0;i<c.length;i++) { 
             s = s + " " + c[i];
         }
         p(s);
+    }
+    void pArrI(int[] c) { pArrI(c); }
+    void pArrI(int[] c, String m) { 
+        String s = "";
+        for(int i=0;i<c.length;i++) { 
+            s = s + " " + c[i];
+        }
+        p(s + " - " + m);
+    }
+    void pBoard(char[][] b) {
+        for (int y=0;y<3;y++) {
+            pArrC(b[y]);
+        }
     }
     void p(char m) { System.out.println(m); }
     void p(String m) { System.out.println(m); }
