@@ -11,22 +11,17 @@ import java.util.HashMap;
  * }
  */
 public class Solution {
-    HashMap<Integer, ListNode> record = new HashMap<Integer, ListNode>();
-    int foundCycles = 0;
     public boolean hasCycle(ListNode head) {
-        if (head == null) { return false; }
-        if (head.next == null) { return false; }
-        if (foundCycles > 10) { return true; }
+        ListNode slow = head, fast = head;
         
-        ListNode node = record.get(head.val);
-        boolean cycle = false;
-        if (node != null) {
-            cycle = (head.next.val == node.next.val);
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            
+            if (slow == fast) 
+                return true;
         }
-
-        if (cycle) { foundCycles++; }
-        
-        record.put(head.val, head);
-        return hasCycle(head.next);
+    
+    return false;
     }
 }
