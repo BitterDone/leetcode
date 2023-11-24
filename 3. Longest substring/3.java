@@ -1,26 +1,20 @@
 import java.util.HashSet;
 
 class Solution {
-    String substring = "";
+    HashSet<Character> set = new HashSet<Character>();
+    int fast=0, slow=0, max=0;
 
     public int lengthOfLongestSubstring(String s) {
-        String localSubstring = "";
-        HashSet<Character> set = new HashSet<Character>();
-        for (int z=0;z<s.length();z++) {
-            char c = s.charAt(z);
-            if (!set.contains(c)) {
-                set.add(c);
-                localSubstring += String.valueOf(c);
+        while (fast < s.length()) {
+            if (!set.contains(s.charAt(fast))) {
+                set.add(s.charAt(fast));
+                fast++;
+            max = Math.max(max, set.size());
             } else {
-                break;
+                set.remove(s.charAt(slow));
+                slow++;
             }
         }
-        if (localSubstring.length() > substring.length()) {
-            substring = localSubstring;
-        }
-        if (s.length() > 1) {
-            return lengthOfLongestSubstring(s.substring(1));
-        }
-        return substring.length();
+        return max;
     }
 }
